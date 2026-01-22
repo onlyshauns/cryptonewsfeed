@@ -11,7 +11,7 @@ interface TopHeadlineProps {
 export default function TopHeadline({ article }: TopHeadlineProps) {
   if (!article) {
     return (
-      <div className="rounded-xl p-8 bg-white dark:bg-white/[0.02] border border-gray-200 dark:border-white/10">
+      <div className="rounded-xl p-8 bg-white/[0.02] border border-white/10">
         <div className="text-gray-500 text-center py-12">No top headline available</div>
       </div>
     );
@@ -24,13 +24,13 @@ export default function TopHeadline({ article }: TopHeadlineProps) {
       href={article.url}
       target="_blank"
       rel="noopener noreferrer"
-      className="block rounded-xl p-8 bg-white dark:bg-white/[0.02] border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/[0.04] transition-all hover:scale-[1.01] cursor-pointer"
+      className="block rounded-xl p-8 bg-white/[0.02] border border-white/10 hover:bg-white/[0.04] transition-all hover:scale-[1.01] cursor-pointer"
     >
       <div className="flex items-start gap-2 mb-4">
-        <span className="px-3 py-1 bg-green-50 dark:bg-[#00ffa7]/10 text-green-600 dark:text-[#00ffa7] text-xs font-semibold rounded-full border border-green-200 dark:border-[#00ffa7]/20">
+        <span className="px-3 py-1 bg-[#00ffa7]/10 text-[#00ffa7] text-xs font-semibold rounded-full border border-[#00ffa7]/20">
           TOP HEADLINE
         </span>
-        <span className="px-3 py-1 bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-400 text-xs rounded-full">
+        <span className="px-3 py-1 bg-white/5 text-gray-400 text-xs rounded-full">
           {article.source}
         </span>
       </div>
@@ -47,12 +47,12 @@ export default function TopHeadline({ article }: TopHeadlineProps) {
         </div>
       )}
 
-      <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4 leading-tight">
+      <h2 className="text-3xl font-bold text-white mb-4 leading-tight">
         {article.title}
       </h2>
 
       {article.description && (
-        <p className="text-gray-600 dark:text-gray-400 mb-4 line-clamp-3">
+        <p className="text-gray-400 mb-4 line-clamp-3">
           {article.description}
         </p>
       )}
@@ -60,7 +60,7 @@ export default function TopHeadline({ article }: TopHeadlineProps) {
       <div className="flex items-center gap-4 text-sm text-gray-500">
         <span>{timeAgo}</span>
         <span>•</span>
-        <span className="text-green-600 dark:text-[#00ffa7] font-medium hover:underline">
+        <span className="text-[#00ffa7] font-medium hover:underline">
           Read more →
         </span>
       </div>

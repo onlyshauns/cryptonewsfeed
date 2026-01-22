@@ -3,9 +3,7 @@
 import { useEffect, useState } from 'react';
 import TopHeadline from './components/TopHeadline';
 import NewsFeed from './components/NewsFeed';
-import BtcPriceCard from './components/BtcPriceCard';
 import TopCryptoCard from './components/TopCryptoCard';
-import ThemeToggle from './components/ThemeToggle';
 import { Article } from '@/types';
 
 export default function Home() {
@@ -48,32 +46,31 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-[#f8f9fa] dark:bg-[#0a0e16] py-8 px-8">
+    <div className="min-h-screen bg-[#0a0e16] py-8 px-8">
       <div className="max-w-[1400px] mx-auto">
         {/* Header */}
         <header className="mb-8">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-1">
+              <h1 className="text-3xl font-bold text-white mb-1">
                 Crypto News Aggregator
               </h1>
-              <p className="text-gray-600 dark:text-gray-400 text-sm">
+              <p className="text-gray-400 text-sm">
                 Real-time news and price feeds
               </p>
             </div>
 
             <div className="flex items-center gap-4">
               {lastUpdated && (
-                <div className="text-sm text-gray-600 dark:text-gray-400 flex items-center gap-2">
-                  <span className="inline-block w-2 h-2 bg-green-500 dark:bg-[#00ffa7] rounded-full animate-pulse" />
+                <div className="text-sm text-gray-400 flex items-center gap-2">
+                  <span className="inline-block w-2 h-2 bg-[#00ffa7] rounded-full animate-pulse" />
                   Updated {formatLastUpdated()}
                 </div>
               )}
-              <ThemeToggle />
               <button
                 onClick={fetchNews}
                 disabled={isLoading}
-                className="px-5 py-2 bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 text-gray-900 dark:text-white rounded-lg transition-colors disabled:opacity-50 text-sm border border-gray-200 dark:border-white/10"
+                className="px-5 py-2 bg-white/5 hover:bg-white/10 text-white rounded-lg transition-colors disabled:opacity-50 text-sm border border-white/10"
               >
                 {isLoading ? 'Refreshing...' : 'Refresh'}
               </button>
@@ -83,7 +80,7 @@ export default function Home() {
 
         {/* Error message */}
         {error && (
-          <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-900/50 rounded-lg text-red-600 dark:text-red-400 text-sm">
+          <div className="mb-6 p-4 bg-red-900/20 border border-red-900/50 rounded-lg text-red-400 text-sm">
             {error}
           </div>
         )}
@@ -92,7 +89,7 @@ export default function Home() {
         <main>
           {isLoading && !topHeadline ? (
             <div className="flex items-center justify-center py-32">
-              <div className="text-gray-900 dark:text-white text-lg">Loading dashboard...</div>
+              <div className="text-white text-lg">Loading dashboard...</div>
             </div>
           ) : (
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -102,9 +99,8 @@ export default function Home() {
                 <NewsFeed articles={newsFeed} />
               </div>
 
-              {/* Right Column - Prices (1/3 width on large screens) */}
+              {/* Right Column - Top Cryptos (1/3 width on large screens) */}
               <div className="space-y-8">
-                <BtcPriceCard />
                 <TopCryptoCard />
               </div>
             </div>
