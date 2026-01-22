@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useTheme } from 'next-themes';
 import { LineChart, Line, ResponsiveContainer } from 'recharts';
 import { CryptoPrice } from '@/types';
 
@@ -8,6 +9,7 @@ export default function TopCryptoCard() {
   const [cryptos, setCryptos] = useState<CryptoPrice[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { theme } = useTheme();
 
   const fetchTopCryptos = async () => {
     try {
@@ -47,11 +49,11 @@ export default function TopCryptoCard() {
 
   if (isLoading) {
     return (
-      <div className="rounded-xl p-6 bg-white/[0.02] dark:bg-white/[0.02] bg-white border border-white/10 dark:border-white/10 border-gray-200">
-        <h3 className="text-lg font-semibold mb-4 text-white dark:text-white text-gray-900">Top 5 Cryptos</h3>
+      <div className="rounded-xl p-6 bg-white dark:bg-white/[0.02] border border-gray-200 dark:border-white/10">
+        <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">Top 5 Cryptos</h3>
         <div className="animate-pulse space-y-4">
           {[1, 2, 3, 4, 5].map((i) => (
-            <div key={i} className="h-12 bg-gray-700 rounded"></div>
+            <div key={i} className="h-12 bg-gray-200 dark:bg-gray-700 rounded"></div>
           ))}
         </div>
       </div>
@@ -60,12 +62,12 @@ export default function TopCryptoCard() {
 
   if (error || cryptos.length === 0) {
     return (
-      <div className="rounded-xl p-6 bg-white/[0.02] dark:bg-white/[0.02] bg-white border border-white/10 dark:border-white/10 border-gray-200">
-        <h3 className="text-lg font-semibold mb-4 text-white dark:text-white text-gray-900">Top 5 Cryptos</h3>
+      <div className="rounded-xl p-6 bg-white dark:bg-white/[0.02] border border-gray-200 dark:border-white/10">
+        <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">Top 5 Cryptos</h3>
         <p className="text-red-500 text-sm">{error || 'No data available'}</p>
         <button
           onClick={fetchTopCryptos}
-          className="mt-4 px-4 py-2 bg-white/5 hover:bg-white/10 rounded-lg text-sm"
+          className="mt-4 px-4 py-2 bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 rounded-lg text-sm text-gray-900 dark:text-white"
         >
           Retry
         </button>
@@ -73,15 +75,18 @@ export default function TopCryptoCard() {
     );
   }
 
+  const isDark = theme === 'dark';
+
   return (
-    <div className="rounded-xl p-6 bg-white/[0.02] dark:bg-white/[0.02] bg-white border border-white/10 dark:border-white/10 border-gray-200">
-      <h3 className="text-lg font-semibold mb-4 text-white dark:text-white text-gray-900">Top 5 Cryptos</h3>
+    <div className="rounded-xl p-6 bg-white dark:bg-white/[0.02] border border-gray-200 dark:border-white/10">
+      <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">Top 5 Cryptos</h3>
 
       <div className="space-y-4">
         {cryptos.map((crypto, index) => {
           const isPositive = crypto.changePercent >= 0;
-          const changeColor = isPositive ? '#00ffa7' : '#ff4444';
-          const changeColorLight = isPositive ? '#10b981' : '#ef4444';
+          const changeColor = isDark
+            ? (isPositive ? '#00ffa7' : '#ff4444')
+            : (isPositive ? '#10b981' : '#ef4444');
           const sparklineData = crypto.sparkline
             ? crypto.sparkline.map((price, idx) => ({ value: price, index: idx }))
             : [];
@@ -89,27 +94,23 @@ export default function TopCryptoCard() {
           return (
             <div
               key={crypto.id}
-              className="flex items-center justify-between p-3 rounded-lg hover:bg-white/[0.02] transition-colors"
+              className="flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors"
             >
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-1">
-                  <span className="text-xs text-gray-500 dark:text-gray-500 text-gray-600">
+                  <span className="text-xs text-gray-600 dark:text-gray-500">
                     {index + 1}.
                   </span>
-                  <span className="font-semibold text-white dark:text-white text-gray-900">
+                  <span className="font-semibold text-gray-900 dark:text-white">
                     {crypto.symbol}
                   </span>
                 </div>
-                <div className="text-sm text-white dark:text-white text-gray-900">
+                <div className="text-sm text-gray-900 dark:text-white">
                   {formatPrice(crypto.price)}
                 </div>
                 <div
                   className="text-xs font-medium"
-                  style={{
-                    color: window.matchMedia('(prefers-color-scheme: dark)').matches
-                      ? changeColor
-                      : changeColorLight,
-                  }}
+                  style={{ color: changeColor }}
                 >
                   {formatChange(crypto.changePercent)}
                 </div>
@@ -122,11 +123,7 @@ export default function TopCryptoCard() {
                       <Line
                         type="monotone"
                         dataKey="value"
-                        stroke={
-                          window.matchMedia('(prefers-color-scheme: dark)').matches
-                            ? changeColor
-                            : changeColorLight
-                        }
+                        stroke={changeColor}
                         strokeWidth={1.5}
                         dot={false}
                         animationDuration={300}

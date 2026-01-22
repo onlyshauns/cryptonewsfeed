@@ -73,7 +73,7 @@ export default function Home() {
               <button
                 onClick={fetchNews}
                 disabled={isLoading}
-                className="px-5 py-2 bg-white/10 dark:bg-white/5 hover:bg-white/20 dark:hover:bg-white/10 text-gray-900 dark:text-white rounded-lg transition-colors disabled:opacity-50 text-sm border border-gray-200 dark:border-white/10"
+                className="px-5 py-2 bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 text-gray-900 dark:text-white rounded-lg transition-colors disabled:opacity-50 text-sm border border-gray-200 dark:border-white/10"
               >
                 {isLoading ? 'Refreshing...' : 'Refresh'}
               </button>

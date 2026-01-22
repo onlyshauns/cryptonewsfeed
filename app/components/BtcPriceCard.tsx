@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useTheme } from 'next-themes';
 import { LineChart, Line, ResponsiveContainer, YAxis } from 'recharts';
 import { BtcPriceData } from '@/types';
 
@@ -8,6 +9,7 @@ export default function BtcPriceCard() {
   const [btcData, setBtcData] = useState<BtcPriceData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { theme } = useTheme();
 
   const fetchBtcPrice = async () => {
     try {
@@ -47,11 +49,11 @@ export default function BtcPriceCard() {
 
   if (isLoading) {
     return (
-      <div className="rounded-xl p-6 bg-white/[0.02] dark:bg-white/[0.02] bg-white border border-white/10 dark:border-white/10 border-gray-200">
-        <h3 className="text-lg font-semibold mb-4 text-white dark:text-white text-gray-900">BTC Live Price</h3>
+      <div className="rounded-xl p-6 bg-white dark:bg-white/[0.02] border border-gray-200 dark:border-white/10">
+        <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">BTC Live Price</h3>
         <div className="animate-pulse space-y-4">
-          <div className="h-12 bg-gray-700 rounded"></div>
-          <div className="h-24 bg-gray-700 rounded"></div>
+          <div className="h-12 bg-gray-200 dark:bg-gray-700 rounded"></div>
+          <div className="h-24 bg-gray-200 dark:bg-gray-700 rounded"></div>
         </div>
       </div>
     );
@@ -59,12 +61,12 @@ export default function BtcPriceCard() {
 
   if (error || !btcData) {
     return (
-      <div className="rounded-xl p-6 bg-white/[0.02] dark:bg-white/[0.02] bg-white border border-white/10 dark:border-white/10 border-gray-200">
-        <h3 className="text-lg font-semibold mb-4 text-white dark:text-white text-gray-900">BTC Live Price</h3>
+      <div className="rounded-xl p-6 bg-white dark:bg-white/[0.02] border border-gray-200 dark:border-white/10">
+        <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">BTC Live Price</h3>
         <p className="text-red-500 text-sm">{error || 'No data available'}</p>
         <button
           onClick={fetchBtcPrice}
-          className="mt-4 px-4 py-2 bg-white/5 hover:bg-white/10 rounded-lg text-sm"
+          className="mt-4 px-4 py-2 bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 rounded-lg text-sm text-gray-900 dark:text-white"
         >
           Retry
         </button>
@@ -73,23 +75,25 @@ export default function BtcPriceCard() {
   }
 
   const isPositive = btcData.changePercent >= 0;
-  const changeColor = isPositive ? '#00ffa7' : '#ff4444';
-  const changeColorLight = isPositive ? '#10b981' : '#ef4444';
+  const isDark = theme === 'dark';
+  const changeColor = isDark
+    ? (isPositive ? '#00ffa7' : '#ff4444')
+    : (isPositive ? '#10b981' : '#ef4444');
 
   return (
-    <div className="rounded-xl p-6 bg-white/[0.02] dark:bg-white/[0.02] bg-white border border-white/10 dark:border-white/10 border-gray-200">
+    <div className="rounded-xl p-6 bg-white dark:bg-white/[0.02] border border-gray-200 dark:border-white/10">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-semibold text-white dark:text-white text-gray-900">BTC Live Price</h3>
-        <span className="inline-block w-2 h-2 bg-[#00ffa7] dark:bg-[#00ffa7] bg-green-500 rounded-full animate-pulse" />
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-white">BTC Live Price</h3>
+        <span className="inline-block w-2 h-2 bg-green-500 dark:bg-[#00ffa7] rounded-full animate-pulse" />
       </div>
 
       <div className="mb-6">
-        <div className="text-3xl font-bold text-white dark:text-white text-gray-900 mb-2">
+        <div className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
           {formatPrice(btcData.price)}
         </div>
         <div
           className="text-lg font-semibold"
-          style={{ color: window.matchMedia('(prefers-color-scheme: dark)').matches ? changeColor : changeColorLight }}
+          style={{ color: changeColor }}
         >
           {formatChange(btcData.changePercent)}
         </div>
@@ -102,7 +106,7 @@ export default function BtcPriceCard() {
             <Line
               type="monotone"
               dataKey="price"
-              stroke={window.matchMedia('(prefers-color-scheme: dark)').matches ? changeColor : changeColorLight}
+              stroke={changeColor}
               strokeWidth={2}
               dot={false}
               animationDuration={300}
@@ -111,7 +115,7 @@ export default function BtcPriceCard() {
         </ResponsiveContainer>
       </div>
 
-      <div className="mt-4 text-xs text-gray-500 dark:text-gray-500 text-gray-600">
+      <div className="mt-4 text-xs text-gray-600 dark:text-gray-500">
         Last 24 hours
       </div>
     </div>
