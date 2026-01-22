@@ -14,8 +14,8 @@ export async function GET() {
       return NextResponse.json(cachedData);
     }
 
-    // Fetch top 5 cryptocurrencies with sparkline data
-    const cryptos = await getTopCryptos(5);
+    // Fetch top 10 cryptocurrencies with sparkline data
+    const cryptos = await getTopCryptos(10);
 
     const response: TopCryptoResponse = { cryptos };
 

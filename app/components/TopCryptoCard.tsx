@@ -48,9 +48,9 @@ export default function TopCryptoCard() {
   if (isLoading) {
     return (
       <div className="rounded-xl p-6 bg-white/[0.02] border border-white/10">
-        <h3 className="text-lg font-semibold mb-4 text-white">Top 5 Cryptos</h3>
+        <h3 className="text-lg font-semibold mb-4 text-white">Markets</h3>
         <div className="animate-pulse space-y-4">
-          {[1, 2, 3, 4, 5].map((i) => (
+          {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((i) => (
             <div key={i} className="h-12 bg-gray-700 rounded"></div>
           ))}
         </div>
@@ -61,7 +61,7 @@ export default function TopCryptoCard() {
   if (error || cryptos.length === 0) {
     return (
       <div className="rounded-xl p-6 bg-white/[0.02] border border-white/10">
-        <h3 className="text-lg font-semibold mb-4 text-white">Top 5 Cryptos</h3>
+        <h3 className="text-lg font-semibold mb-4 text-white">Markets</h3>
         <p className="text-red-500 text-sm">{error || 'No data available'}</p>
         <button
           onClick={fetchTopCryptos}
@@ -75,7 +75,7 @@ export default function TopCryptoCard() {
 
   return (
     <div className="rounded-xl p-6 bg-white/[0.02] border border-white/10">
-      <h3 className="text-lg font-semibold mb-4 text-white">Top 5 Cryptos</h3>
+      <h3 className="text-lg font-semibold mb-4 text-white">Markets</h3>
 
       <div className="space-y-4">
         {cryptos.map((crypto, index) => {
