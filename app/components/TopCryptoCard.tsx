@@ -4,7 +4,12 @@ import { useEffect, useState } from 'react';
 import { LineChart, Line, ResponsiveContainer } from 'recharts';
 import { CryptoPrice } from '@/types';
 
-export default function TopCryptoCard() {
+interface TopCryptoCardProps {
+  onTokenClick: (symbol: string) => void;
+  selectedToken: string | null;
+}
+
+export default function TopCryptoCard({ onTokenClick, selectedToken }: TopCryptoCardProps) {
   const [cryptos, setCryptos] = useState<CryptoPrice[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -84,11 +89,17 @@ export default function TopCryptoCard() {
           const sparklineData = crypto.sparkline
             ? crypto.sparkline.map((price, idx) => ({ value: price, index: idx }))
             : [];
+          const isSelected = selectedToken === crypto.symbol;
 
           return (
             <div
               key={crypto.id}
-              className="flex items-center justify-between p-3 rounded-lg hover:bg-white/[0.02] transition-colors"
+              onClick={() => onTokenClick(crypto.symbol)}
+              className={`flex items-center justify-between p-3 rounded-lg transition-colors cursor-pointer ${
+                isSelected
+                  ? 'bg-white/10 border border-white/20'
+                  : 'hover:bg-white/[0.02] border border-transparent'
+              }`}
             >
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-1">

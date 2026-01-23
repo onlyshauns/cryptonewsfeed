@@ -12,6 +12,7 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
+  const [selectedToken, setSelectedToken] = useState<string | null>(null);
 
   const fetchNews = async () => {
     try {
@@ -44,6 +45,14 @@ export default function Home() {
     const diffHours = Math.floor(diffMins / 60);
     return `${diffHours}h ago`;
   };
+
+  // Filter news based on selected token
+  const filteredNews = selectedToken
+    ? newsFeed.filter(article => {
+        const searchText = `${article.title} ${article.description || ''}`.toLowerCase();
+        return searchText.includes(selectedToken.toLowerCase());
+      })
+    : newsFeed;
 
   return (
     <div className="min-h-screen bg-[#0a0e16] py-8 px-8">
@@ -95,13 +104,31 @@ export default function Home() {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
               {/* Left Column - News (2/3 width on large screens) */}
               <div className="lg:col-span-2 space-y-8">
+                {selectedToken && (
+                  <div className="flex items-center justify-between p-4 bg-white/5 rounded-lg border border-white/10">
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm text-gray-400">Filtering by:</span>
+                      <span className="text-sm font-semibold text-white">{selectedToken}</span>
+                      <span className="text-xs text-gray-500">({filteredNews.length} articles)</span>
+                    </div>
+                    <button
+                      onClick={() => setSelectedToken(null)}
+                      className="px-3 py-1 text-xs bg-white/5 hover:bg-white/10 text-white rounded transition-colors"
+                    >
+                      Clear Filter
+                    </button>
+                  </div>
+                )}
                 <TopHeadline article={topHeadline} />
-                <NewsFeed articles={newsFeed} />
+                <NewsFeed articles={filteredNews} />
               </div>
 
               {/* Right Column - Top Cryptos (1/3 width on large screens) */}
               <div className="space-y-8">
-                <TopCryptoCard />
+                <TopCryptoCard
+                  onTokenClick={setSelectedToken}
+                  selectedToken={selectedToken}
+                />
               </div>
             </div>
           )}
