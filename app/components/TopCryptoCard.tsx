@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { LineChart, Line, ResponsiveContainer } from 'recharts';
+import { LineChart, Line, ResponsiveContainer, YAxis } from 'recharts';
 import { CryptoPrice } from '@/types';
 
 interface TopCryptoCardProps {
@@ -125,6 +125,7 @@ export default function TopCryptoCard({ onTokenClick, selectedToken }: TopCrypto
                 <div className="w-24 h-12">
                   <ResponsiveContainer width="100%" height="100%">
                     <LineChart data={sparklineData}>
+                      <YAxis domain={['dataMin', 'dataMax']} hide />
                       <Line
                         type="monotone"
                         dataKey="value"
