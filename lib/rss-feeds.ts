@@ -6,6 +6,12 @@ const parser = new Parser();
 const RSS_FEEDS = {
   coindesk: 'https://www.coindesk.com/arc/outboundfeeds/rss/',
   cointelegraph: 'https://cointelegraph.com/rss',
+  decrypt: 'https://decrypt.co/feed',
+  theblock: 'https://www.theblock.co/rss.xml',
+  bitcoinmagazine: 'https://bitcoinmagazine.com/feed',
+  newsbtc: 'https://www.newsbtc.com/feed/',
+  beincrypto: 'https://beincrypto.com/feed/',
+  cryptoslate: 'https://cryptoslate.com/feed/',
 };
 
 /**
@@ -37,12 +43,36 @@ export async function parseRssFeed(url: string, sourceName: string): Promise<Art
  */
 export async function aggregateAllFeeds(): Promise<Article[]> {
   try {
-    const [coindeskArticles, cointelegraphArticles] = await Promise.all([
+    const [
+      coindeskArticles,
+      cointelegraphArticles,
+      decryptArticles,
+      theblockArticles,
+      bitcoinmagazineArticles,
+      newsbtcArticles,
+      beincryptoArticles,
+      cryptoslateArticles,
+    ] = await Promise.all([
       parseRssFeed(RSS_FEEDS.coindesk, 'CoinDesk'),
       parseRssFeed(RSS_FEEDS.cointelegraph, 'Cointelegraph'),
+      parseRssFeed(RSS_FEEDS.decrypt, 'Decrypt'),
+      parseRssFeed(RSS_FEEDS.theblock, 'The Block'),
+      parseRssFeed(RSS_FEEDS.bitcoinmagazine, 'Bitcoin Magazine'),
+      parseRssFeed(RSS_FEEDS.newsbtc, 'NewsBTC'),
+      parseRssFeed(RSS_FEEDS.beincrypto, 'BeInCrypto'),
+      parseRssFeed(RSS_FEEDS.cryptoslate, 'CryptoSlate'),
     ]);
 
-    return [...coindeskArticles, ...cointelegraphArticles];
+    return [
+      ...coindeskArticles,
+      ...cointelegraphArticles,
+      ...decryptArticles,
+      ...theblockArticles,
+      ...bitcoinmagazineArticles,
+      ...newsbtcArticles,
+      ...beincryptoArticles,
+      ...cryptoslateArticles,
+    ];
   } catch (error) {
     console.error('Error aggregating RSS feeds:', error);
     return [];
