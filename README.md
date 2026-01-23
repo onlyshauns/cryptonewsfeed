@@ -6,7 +6,10 @@ A clean, dark-themed cryptocurrency news aggregator built with Next.js 16. Featu
 
 ### News Aggregation
 - **Top Headline**: Featured article from the past 24 hours with large display
-- **Multi-Source Feed**: Aggregates news from CoinDesk, Cointelegraph, and CryptoPanic
+- **Multi-Source Feed**: Aggregates news from 9 major sources:
+  - CoinDesk, Cointelegraph, Decrypt, The Block
+  - Bitcoin Magazine, NewsBTC, BeInCrypto, CryptoSlate
+  - CryptoPanic (optional, with API key)
 - **Load More**: Paginated news feed with "Load More" functionality
 - **Direct Links**: Click any article to read on the original source
 
@@ -30,8 +33,8 @@ A clean, dark-themed cryptocurrency news aggregator built with Next.js 16. Featu
 - **Charts**: Recharts for sparklines
 - **APIs**:
   - CoinGecko API (free tier - crypto prices & market data)
-  - CryptoPanic API (optional - crypto news)
-  - RSS feeds (CoinDesk, Cointelegraph)
+  - CryptoPanic API (optional - additional crypto news)
+  - RSS feeds from 8 major outlets (CoinDesk, Cointelegraph, Decrypt, The Block, Bitcoin Magazine, NewsBTC, BeInCrypto, CryptoSlate)
 
 ## 🚀 Getting Started
 
