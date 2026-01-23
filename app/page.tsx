@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import TopHeadline from './components/TopHeadline';
 import NewsFeed from './components/NewsFeed';
 import TopCryptoCard from './components/TopCryptoCard';
+import MarketSummaryModal from './components/MarketSummaryModal';
 import { Article } from '@/types';
 
 export default function Home() {
@@ -13,6 +14,7 @@ export default function Home() {
   const [error, setError] = useState<string | null>(null);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   const [selectedToken, setSelectedToken] = useState<string | null>(null);
+  const [isSummaryModalOpen, setIsSummaryModalOpen] = useState(false);
 
   const fetchNews = async () => {
     try {
@@ -77,6 +79,13 @@ export default function Home() {
                 </div>
               )}
               <button
+                onClick={() => setIsSummaryModalOpen(true)}
+                disabled={isLoading || newsFeed.length === 0}
+                className="px-5 py-2 bg-[#00ffa7]/10 hover:bg-[#00ffa7]/20 text-[#00ffa7] rounded-lg transition-colors disabled:opacity-50 text-sm border border-[#00ffa7]/30 font-medium"
+              >
+                AI Summary
+              </button>
+              <button
                 onClick={fetchNews}
                 disabled={isLoading}
                 className="px-5 py-2 bg-white/5 hover:bg-white/10 text-white rounded-lg transition-colors disabled:opacity-50 text-sm border border-white/10"
@@ -134,6 +143,13 @@ export default function Home() {
           )}
         </main>
       </div>
+
+      {/* Market Summary Modal */}
+      <MarketSummaryModal
+        isOpen={isSummaryModalOpen}
+        onClose={() => setIsSummaryModalOpen(false)}
+        articles={newsFeed}
+      />
     </div>
   );
 }

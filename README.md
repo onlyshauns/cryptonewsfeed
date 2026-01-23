@@ -10,6 +10,8 @@ A clean, dark-themed cryptocurrency news aggregator built with Next.js 16. Featu
   - CoinDesk, Cointelegraph, Decrypt, The Block
   - Bitcoin Magazine, NewsBTC, BeInCrypto, CryptoSlate
   - CryptoPanic (optional, with API key)
+- **AI Market Summary**: Click "AI Summary" to get a concise 2-3 paragraph overview of current market trends powered by Claude AI
+- **Token Filtering**: Click any crypto in Markets to filter news by that specific token
 - **Load More**: Paginated news feed with "Load More" functionality
 - **Direct Links**: Click any article to read on the original source
 
@@ -31,9 +33,11 @@ A clean, dark-themed cryptocurrency news aggregator built with Next.js 16. Featu
 - **Language**: TypeScript
 - **Styling**: Tailwind CSS v4
 - **Charts**: Recharts for sparklines
+- **AI**: Anthropic Claude API for market summaries
 - **APIs**:
   - CoinGecko API (free tier - crypto prices & market data)
   - CryptoPanic API (optional - additional crypto news)
+  - Anthropic API (required for AI Summary feature)
   - RSS feeds from 8 major outlets (CoinDesk, Cointelegraph, Decrypt, The Block, Bitcoin Magazine, NewsBTC, BeInCrypto, CryptoSlate)
 
 ## 🚀 Getting Started
@@ -41,6 +45,7 @@ A clean, dark-themed cryptocurrency news aggregator built with Next.js 16. Featu
 ### Prerequisites
 
 - Node.js 18+ installed
+- Anthropic API key (required for AI Summary feature - [Get yours here](https://console.anthropic.com/settings/keys))
 - CryptoPanic API key (optional - app works without it using RSS feeds only)
 
 ### Installation
@@ -68,6 +73,10 @@ CRYPTOPANIC_API_KEY=your_api_key_here
 
 # CoinGecko API URL (free tier, no key required)
 NEXT_PUBLIC_COINGECKO_API=https://api.coingecko.com/api/v3
+
+# Required: Anthropic API Key for AI Market Summary
+# Get yours at https://console.anthropic.com/settings/keys
+ANTHROPIC_API_KEY=your_anthropic_api_key_here
 ```
 
 4. Run the development server:
