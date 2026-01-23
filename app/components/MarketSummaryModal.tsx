@@ -3,6 +3,19 @@
 import { useEffect, useState } from 'react';
 import { Article } from '@/types';
 
+interface MarketSummary {
+  sentiment: {
+    overall: 'bullish' | 'bearish' | 'neutral';
+    bullishCount: number;
+    bearishCount: number;
+    score: number;
+  };
+  topCryptos: Array<{ symbol: string; mentions: number }>;
+  topTopics: Array<{ topic: string; count: number }>;
+  keyThemes: string[];
+  totalArticles: number;
+}
+
 interface MarketSummaryModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -10,7 +23,7 @@ interface MarketSummaryModalProps {
 }
 
 export default function MarketSummaryModal({ isOpen, onClose, articles }: MarketSummaryModalProps) {
-  const [summary, setSummary] = useState<string>('');
+  const [summary, setSummary] = useState<MarketSummary | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -34,7 +47,7 @@ export default function MarketSummaryModal({ isOpen, onClose, articles }: Market
       if (!response.ok) throw new Error('Failed to generate summary');
 
       const data = await response.json();
-      setSummary(data.summary);
+      setSummary(data.analysis);
     } catch (err) {
       console.error('Error generating summary:', err);
       setError('Failed to generate market summary. Please try again.');
@@ -47,9 +60,31 @@ export default function MarketSummaryModal({ isOpen, onClose, articles }: Market
     onClose();
     // Reset after animation completes
     setTimeout(() => {
-      setSummary('');
+      setSummary(null);
       setError(null);
     }, 300);
+  };
+
+  const getSentimentColor = (sentiment: string) => {
+    switch (sentiment) {
+      case 'bullish':
+        return '#00ffa7';
+      case 'bearish':
+        return '#ff4444';
+      default:
+        return '#888';
+    }
+  };
+
+  const getSentimentEmoji = (sentiment: string) => {
+    switch (sentiment) {
+      case 'bullish':
+        return '📈';
+      case 'bearish':
+        return '📉';
+      default:
+        return '➖';
+    }
   };
 
   if (!isOpen) return null;
@@ -60,15 +95,15 @@ export default function MarketSummaryModal({ isOpen, onClose, articles }: Market
       onClick={handleClose}
     >
       <div
-        className="relative w-full max-w-2xl mx-4 bg-[#0a0e16] border border-white/20 rounded-xl shadow-2xl"
+        className="relative w-full max-w-3xl mx-4 bg-[#0a0e16] border border-white/20 rounded-xl shadow-2xl max-h-[90vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-white/10">
+        <div className="flex items-center justify-between p-6 border-b border-white/10 sticky top-0 bg-[#0a0e16] z-10">
           <div>
-            <h2 className="text-2xl font-bold text-white">Market Summary</h2>
+            <h2 className="text-2xl font-bold text-white">Market Analysis</h2>
             <p className="text-sm text-gray-400 mt-1">
-              AI-generated overview based on {articles.length} articles
+              Keyword-based analysis of {articles.length} articles
             </p>
           </div>
           <button
@@ -97,7 +132,7 @@ export default function MarketSummaryModal({ isOpen, onClose, articles }: Market
           {isLoading && (
             <div className="flex flex-col items-center justify-center py-12">
               <div className="w-12 h-12 border-4 border-[#00ffa7] border-t-transparent rounded-full animate-spin mb-4"></div>
-              <p className="text-gray-400 text-sm">Analyzing market news...</p>
+              <p className="text-gray-400 text-sm">Analyzing market trends...</p>
             </div>
           )}
 
@@ -114,9 +149,112 @@ export default function MarketSummaryModal({ isOpen, onClose, articles }: Market
           )}
 
           {summary && !isLoading && (
-            <div className="prose prose-invert max-w-none">
-              <div className="text-gray-300 leading-relaxed whitespace-pre-wrap">
-                {summary}
+            <div className="space-y-6">
+              {/* Sentiment Overview */}
+              <div className="bg-white/[0.02] border border-white/10 rounded-lg p-6">
+                <h3 className="text-lg font-semibold text-white mb-4">Market Sentiment</h3>
+                <div className="flex items-center gap-4 mb-4">
+                  <div
+                    className="text-5xl"
+                    style={{ filter: 'drop-shadow(0 0 10px currentColor)' }}
+                  >
+                    {getSentimentEmoji(summary.sentiment.overall)}
+                  </div>
+                  <div className="flex-1">
+                    <div
+                      className="inline-block px-4 py-2 rounded-lg font-bold text-lg uppercase"
+                      style={{
+                        backgroundColor: `${getSentimentColor(summary.sentiment.overall)}20`,
+                        color: getSentimentColor(summary.sentiment.overall),
+                        border: `1px solid ${getSentimentColor(summary.sentiment.overall)}40`,
+                      }}
+                    >
+                      {summary.sentiment.overall}
+                    </div>
+                    <div className="mt-3 flex items-center gap-4 text-sm">
+                      <span className="text-[#00ffa7]">
+                        ↑ {summary.sentiment.bullishCount} positive signals
+                      </span>
+                      <span className="text-[#ff4444]">
+                        ↓ {summary.sentiment.bearishCount} negative signals
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                {/* Sentiment Bar */}
+                <div className="w-full h-3 bg-white/5 rounded-full overflow-hidden">
+                  <div
+                    className="h-full transition-all duration-500"
+                    style={{
+                      width: `${((summary.sentiment.bullishCount / (summary.sentiment.bullishCount + summary.sentiment.bearishCount)) * 100) || 50}%`,
+                      backgroundColor: '#00ffa7',
+                    }}
+                  />
+                </div>
+              </div>
+
+              {/* Key Themes */}
+              <div className="bg-white/[0.02] border border-white/10 rounded-lg p-6">
+                <h3 className="text-lg font-semibold text-white mb-4">Key Themes</h3>
+                <ul className="space-y-3">
+                  {summary.keyThemes.map((theme, idx) => (
+                    <li key={idx} className="flex items-start gap-3">
+                      <span className="text-[#00ffa7] mt-1">•</span>
+                      <span className="text-gray-300 leading-relaxed">{theme}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* Two Column Layout */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Top Cryptocurrencies */}
+                <div className="bg-white/[0.02] border border-white/10 rounded-lg p-6">
+                  <h3 className="text-lg font-semibold text-white mb-4">Most Mentioned</h3>
+                  <div className="space-y-3">
+                    {summary.topCryptos.length > 0 ? (
+                      summary.topCryptos.map((crypto, idx) => (
+                        <div key={idx} className="flex items-center justify-between">
+                          <span className="font-semibold text-white">{crypto.symbol}</span>
+                          <div className="flex items-center gap-2">
+                            <div className="w-24 h-2 bg-white/5 rounded-full overflow-hidden">
+                              <div
+                                className="h-full bg-[#00ffa7]"
+                                style={{
+                                  width: `${(crypto.mentions / summary.topCryptos[0].mentions) * 100}%`,
+                                }}
+                              />
+                            </div>
+                            <span className="text-sm text-gray-400 w-8 text-right">
+                              {crypto.mentions}
+                            </span>
+                          </div>
+                        </div>
+                      ))
+                    ) : (
+                      <p className="text-gray-500 text-sm">No specific tokens identified</p>
+                    )}
+                  </div>
+                </div>
+
+                {/* Top Topics */}
+                <div className="bg-white/[0.02] border border-white/10 rounded-lg p-6">
+                  <h3 className="text-lg font-semibold text-white mb-4">Hot Topics</h3>
+                  <div className="space-y-3">
+                    {summary.topTopics.length > 0 ? (
+                      summary.topTopics.map((topic, idx) => (
+                        <div key={idx} className="flex items-center justify-between">
+                          <span className="font-medium text-white capitalize">{topic.topic}</span>
+                          <span className="px-3 py-1 bg-white/10 rounded-full text-xs text-gray-300">
+                            {topic.count} mentions
+                          </span>
+                        </div>
+                      ))
+                    ) : (
+                      <p className="text-gray-500 text-sm">No topics identified</p>
+                    )}
+                  </div>
+                </div>
               </div>
             </div>
           )}
@@ -126,13 +264,13 @@ export default function MarketSummaryModal({ isOpen, onClose, articles }: Market
         {summary && !isLoading && (
           <div className="p-6 border-t border-white/10 flex justify-between items-center">
             <p className="text-xs text-gray-500">
-              Powered by Claude AI
+              Powered by keyword analysis • No API required
             </p>
             <button
               onClick={generateSummary}
               className="px-4 py-2 bg-white/5 hover:bg-white/10 text-white rounded-lg text-sm transition-colors border border-white/10"
             >
-              Regenerate
+              Refresh Analysis
             </button>
           </div>
         )}
