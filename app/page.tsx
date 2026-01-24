@@ -11,14 +11,18 @@ export default function Home() {
   const [topHeadline, setTopHeadline] = useState<Article | null>(null);
   const [newsFeed, setNewsFeed] = useState<Article[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   const [selectedToken, setSelectedToken] = useState<string | null>(null);
   const [isSummaryModalOpen, setIsSummaryModalOpen] = useState(false);
 
-  const fetchNews = async () => {
+  const fetchNews = async (isManualRefresh = false) => {
     try {
       setError(null);
+      if (isManualRefresh) {
+        setIsRefreshing(true);
+      }
       const response = await fetch('/api/news');
       if (!response.ok) throw new Error('Failed to fetch news');
       const data = await response.json();
@@ -26,15 +30,27 @@ export default function Home() {
       setNewsFeed(data.newsFeed);
       setLastUpdated(new Date());
       setIsLoading(false);
+      setIsRefreshing(false);
     } catch (err) {
       console.error('Error fetching news:', err);
       setError('Failed to load news. Please try again.');
       setIsLoading(false);
+      setIsRefreshing(false);
     }
   };
 
+  // Initial fetch
   useEffect(() => {
     fetchNews();
+  }, []);
+
+  // Auto-refresh every 3 minutes
+  useEffect(() => {
+    const interval = setInterval(() => {
+      fetchNews();
+    }, 3 * 60 * 1000); // 3 minutes
+
+    return () => clearInterval(interval);
   }, []);
 
   const formatLastUpdated = () => {
@@ -86,11 +102,11 @@ export default function Home() {
                 AI Summary
               </button>
               <button
-                onClick={fetchNews}
-                disabled={isLoading}
+                onClick={() => fetchNews(true)}
+                disabled={isLoading || isRefreshing}
                 className="px-5 py-2 bg-white/5 hover:bg-white/10 text-white rounded-lg transition-colors disabled:opacity-50 text-sm border border-white/10"
               >
-                {isLoading ? 'Refreshing...' : 'Refresh'}
+                {isRefreshing ? 'Refreshing...' : 'Refresh'}
               </button>
             </div>
           </div>
@@ -150,6 +166,21 @@ export default function Home() {
         onClose={() => setIsSummaryModalOpen(false)}
         articles={newsFeed}
       />
+
+      {/* Refreshing Overlay */}
+      {isRefreshing && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+          <div className="bg-[#0a0e16] border border-white/20 rounded-xl p-8 shadow-2xl">
+            <div className="flex flex-col items-center gap-4">
+              <div className="w-16 h-16 border-4 border-[#00ffa7] border-t-transparent rounded-full animate-spin"></div>
+              <div className="text-center">
+                <p className="text-white font-semibold text-lg">Refreshing Data</p>
+                <p className="text-gray-400 text-sm mt-1">Fetching the latest news...</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
