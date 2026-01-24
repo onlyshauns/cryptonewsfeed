@@ -72,7 +72,7 @@ export default function MarketSummaryModal({ isOpen, onClose, articles }: Market
       case 'bearish':
         return '#ff4444';
       default:
-        return '#888';
+        return '#ffeb3b';
     }
   };
 
@@ -83,7 +83,7 @@ export default function MarketSummaryModal({ isOpen, onClose, articles }: Market
       case 'bearish':
         return '📉';
       default:
-        return '➖';
+        return '😐';
     }
   };
 

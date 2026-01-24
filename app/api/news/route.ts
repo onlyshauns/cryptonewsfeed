@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getCryptoNews } from '@/lib/cryptopanic';
 import { aggregateAllFeeds } from '@/lib/rss-feeds';
+import { getFreeCryptoNews } from '@/lib/free-crypto-news';
 import { Article, NewsResponse } from '@/types';
 
 // Simple in-memory cache
@@ -16,13 +17,14 @@ export async function GET() {
     }
 
     // Fetch from all sources in parallel
-    const [cryptoPanicArticles, rssArticles] = await Promise.all([
+    const [cryptoPanicArticles, rssArticles, freeCryptoNewsArticles] = await Promise.all([
       getCryptoNews({ limit: 20 }),
       aggregateAllFeeds(),
+      getFreeCryptoNews(20),
     ]);
 
     // Combine all articles
-    const allArticles = [...cryptoPanicArticles, ...rssArticles];
+    const allArticles = [...cryptoPanicArticles, ...rssArticles, ...freeCryptoNewsArticles];
 
     // Sort by timestamp (newest first)
     allArticles.sort((a, b) => {
