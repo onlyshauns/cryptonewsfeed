@@ -99,10 +99,10 @@ export default function MarketSummaryModal({ isOpen, onClose, articles }: Market
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-white/10 sticky top-0 bg-[#0a0e16] z-10">
+        <div className="flex items-center justify-between p-4 border-b border-white/5 sticky top-0 bg-[#0a0e16] z-10">
           <div>
-            <h2 className="text-2xl font-bold text-white">Market Analysis</h2>
-            <p className="text-sm text-gray-400 mt-1">
+            <h2 className="text-xl font-bold text-white">Market Analysis</h2>
+            <p className="text-xs text-gray-400 mt-0.5">
               Keyword-based analysis of {articles.length} articles
             </p>
           </div>
@@ -128,7 +128,7 @@ export default function MarketSummaryModal({ isOpen, onClose, articles }: Market
         </div>
 
         {/* Content */}
-        <div className="p-6">
+        <div className="p-4">
           {isLoading && (
             <div className="flex flex-col items-center justify-center py-12">
               <div className="w-12 h-12 border-4 border-[#00ffa7] border-t-transparent rounded-full animate-spin mb-4"></div>
@@ -149,20 +149,20 @@ export default function MarketSummaryModal({ isOpen, onClose, articles }: Market
           )}
 
           {summary && !isLoading && (
-            <div className="space-y-6">
+            <div className="space-y-3">
               {/* Sentiment Overview */}
-              <div className="bg-white/[0.02] border border-white/10 rounded-lg p-6">
-                <h3 className="text-lg font-semibold text-white mb-4">Market Sentiment</h3>
-                <div className="flex items-center gap-4 mb-4">
+              <div className="bg-white/[0.02] border border-white/10 rounded-lg p-4">
+                <h3 className="text-base font-semibold text-white mb-2">Market Sentiment</h3>
+                <div className="flex items-center gap-4 mb-2">
                   <div
-                    className="text-5xl"
+                    className="text-4xl"
                     style={{ filter: 'drop-shadow(0 0 10px currentColor)' }}
                   >
                     {getSentimentEmoji(summary.sentiment.overall)}
                   </div>
                   <div className="flex-1">
                     <div
-                      className="inline-block px-4 py-2 rounded-lg font-bold text-lg uppercase"
+                      className="inline-block px-3 py-1.5 rounded-lg font-bold text-base uppercase"
                       style={{
                         backgroundColor: `${getSentimentColor(summary.sentiment.overall)}20`,
                         color: getSentimentColor(summary.sentiment.overall),
@@ -171,7 +171,7 @@ export default function MarketSummaryModal({ isOpen, onClose, articles }: Market
                     >
                       {summary.sentiment.overall}
                     </div>
-                    <div className="mt-3 flex items-center gap-4 text-sm">
+                    <div className="mt-2 flex items-center gap-4 text-xs">
                       <span className="text-[#00ffa7]">
                         ↑ {summary.sentiment.bullishCount} positive signals
                       </span>
@@ -194,28 +194,28 @@ export default function MarketSummaryModal({ isOpen, onClose, articles }: Market
               </div>
 
               {/* Key Themes */}
-              <div className="bg-white/[0.02] border border-white/10 rounded-lg p-6">
-                <h3 className="text-lg font-semibold text-white mb-4">Key Themes</h3>
-                <ul className="space-y-3">
+              <div className="bg-white/[0.02] border border-white/10 rounded-lg p-4">
+                <h3 className="text-base font-semibold text-white mb-2">Key Themes</h3>
+                <ul className="space-y-1">
                   {summary.keyThemes.map((theme, idx) => (
-                    <li key={idx} className="flex items-start gap-3">
-                      <span className="text-[#00ffa7] mt-1">•</span>
-                      <span className="text-gray-300 leading-relaxed">{theme}</span>
+                    <li key={idx} className="flex items-start gap-2">
+                      <span className="text-[#00ffa7] text-sm">•</span>
+                      <span className="text-gray-300 text-sm leading-snug">{theme}</span>
                     </li>
                   ))}
                 </ul>
               </div>
 
               {/* Two Column Layout */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 {/* Top Cryptocurrencies */}
-                <div className="bg-white/[0.02] border border-white/10 rounded-lg p-6">
-                  <h3 className="text-lg font-semibold text-white mb-4">Most Mentioned</h3>
-                  <div className="space-y-3">
+                <div className="bg-white/[0.02] border border-white/10 rounded-lg p-4">
+                  <h3 className="text-base font-semibold text-white mb-2">Most Mentioned</h3>
+                  <div className="space-y-2">
                     {summary.topCryptos.length > 0 ? (
                       summary.topCryptos.map((crypto, idx) => (
                         <div key={idx} className="flex items-center justify-between">
-                          <span className="font-semibold text-white">{crypto.symbol}</span>
+                          <span className="font-semibold text-white text-sm">{crypto.symbol}</span>
                           <div className="flex items-center gap-2">
                             <div className="w-24 h-2 bg-white/5 rounded-full overflow-hidden">
                               <div
@@ -238,14 +238,14 @@ export default function MarketSummaryModal({ isOpen, onClose, articles }: Market
                 </div>
 
                 {/* Top Topics */}
-                <div className="bg-white/[0.02] border border-white/10 rounded-lg p-6">
-                  <h3 className="text-lg font-semibold text-white mb-4">Hot Topics</h3>
-                  <div className="space-y-3">
+                <div className="bg-white/[0.02] border border-white/10 rounded-lg p-4">
+                  <h3 className="text-base font-semibold text-white mb-2">Hot Topics</h3>
+                  <div className="space-y-2">
                     {summary.topTopics.length > 0 ? (
                       summary.topTopics.map((topic, idx) => (
                         <div key={idx} className="flex items-center justify-between">
-                          <span className="font-medium text-white capitalize">{topic.topic}</span>
-                          <span className="px-3 py-1 bg-white/10 rounded-full text-xs text-gray-300">
+                          <span className="font-medium text-white capitalize text-sm">{topic.topic}</span>
+                          <span className="px-2 py-0.5 bg-white/10 rounded-full text-xs text-gray-300">
                             {topic.count} mentions
                           </span>
                         </div>
@@ -262,7 +262,7 @@ export default function MarketSummaryModal({ isOpen, onClose, articles }: Market
 
         {/* Footer */}
         {summary && !isLoading && (
-          <div className="p-6 border-t border-white/10 flex justify-between items-center">
+          <div className="p-4 border-t border-white/5 flex justify-between items-center">
             <p className="text-xs text-gray-500">
               Powered by keyword analysis • No API required
             </p>
