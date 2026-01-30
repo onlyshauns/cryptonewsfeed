@@ -14,6 +14,7 @@ A clean, dark-themed cryptocurrency news aggregator built with Next.js 16. Featu
 - **Token Filtering**: Click any crypto in Markets to filter news by that specific token
 - **Load More**: Paginated news feed with "Load More" functionality
 - **Direct Links**: Click any article to read on the original source
+- **Auto-Refresh**: News automatically updates every 3 minutes
 
 ### Markets Section
 - **Top 10 Cryptocurrencies**: Real-time prices by market cap
@@ -131,6 +132,28 @@ Returns top 10 cryptocurrencies by market cap with sparklines and 24h change.
 ```
 
 **Caching:** 30 seconds
+
+### POST `/api/market-summary`
+Analyzes an array of news articles and returns market sentiment analysis.
+
+**Request Body:**
+```json
+{
+  "articles": [{ "title": "...", "description": "..." }, ...]
+}
+```
+
+**Response:**
+```json
+{
+  "sentiment": "bullish",
+  "topCryptocurrencies": ["Bitcoin", "Ethereum", ...],
+  "trendingTopics": ["regulation", "ETF", ...],
+  "keyThemes": ["Institutional adoption continues...", ...]
+}
+```
+
+**No caching** - Generates fresh analysis on demand
 
 ## ⚙️ Rate Limits
 
